@@ -1,5 +1,15 @@
 # ASN.1
 
+```
+ █████  ███████ ███    ██     ██ 
+██   ██ ██      ████   ██    ███ 
+███████ ███████ ██ ██  ██     ██ 
+██   ██      ██ ██  ██ ██     ██ 
+██   ██ ███████ ██   ████ ██  ██ 
+
+BER encoder/decoder
+```
+
 Encoding and decoding of ASN.1 (Abstract Syntax Notation One) (X.208) abstract objects using BER (Basic Encoding Rules) (X.209).
 
 ## Basic Encoding Rules
