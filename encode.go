@@ -72,19 +72,43 @@ func getChoiceIndex(val reflect.Value) (int, error) {
 func (e Encoder) encode() (encodedContents []byte, err error) {
 	val := reflect.ValueOf(e.v)
 
+	// handle interface type
+	if val.Kind() == reflect.Interface {
+		val = val.Elem()
+	}
+
 	if !val.IsValid() {
 		return nil, fmt.Errorf("asn1: cannot marshal nil value")
 	}
 
 	var contentsEncoder encoder
 
+	if val.Kind() == reflect.Slice && val.Len() == 0 && e.opts.omitEmpty {
+		fmt.Println("omit empty!")
+		return []byte(nil), nil
+	}
+
 	id := identifier{
 		isConstructed: false,
 		class:         TagClassUniversal,
 	}
 
-	if empty(val) && e.opts.optional {
-		return nil, nil
+	empty := isEmpty(val)
+
+	if empty && e.opts.optional {
+		return []byte(nil), nil
+	}
+
+	if e.opts.defaultValue != nil {
+		if canHaveDefaultValue(val.Kind()) {
+			defaultValue := reflect.New(val.Type()).Elem()
+			defaultValue.SetInt(*e.opts.defaultValue)
+
+			if reflect.DeepEqual(val.Interface(), defaultValue.Interface()) {
+				return []byte(nil), nil
+			}
+
+		}
 	}
 
 	if e.opts.choice {
@@ -260,6 +284,8 @@ func (e Encoder) encode() (encodedContents []byte, err error) {
 
 			id.isConstructed = true
 		}
+
+		// implicit
 		id.tag = *e.opts.tag
 	}
 
@@ -339,10 +365,22 @@ func (e bytesEncoder) encode() ([]byte, error) {
 	return e, nil
 }
 
-func empty(value reflect.Value) bool {
+func isEmpty(value reflect.Value) bool {
 	if value.Type() == nullType {
 		return false
 	}
 	defaultValue := reflect.Zero(value.Type())
 	return reflect.DeepEqual(value.Interface(), defaultValue.Interface())
+	// if value.Interface() == nil {
+	// 	return true
+	// }
+	// return false
+}
+
+func canHaveDefaultValue(k reflect.Kind) bool {
+	switch k {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return true
+	}
+	return false
 }

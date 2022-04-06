@@ -34,7 +34,9 @@ func TestNewObjectIdentifier(t *testing.T) {
 	// bad root node
 	_, err = NewObjectIdentifier(5, []uint{9, 2342, 19200300, 100, 1, 2})
 	assertError(t, err)
-	_, err = NewObjectIdentifier(50, []uint{9, 2342, 19200300, 100, 1, 2})
+
+	// big first node
+	_, err = NewObjectIdentifier(0, []uint{50})
 	assertError(t, err)
 
 	// empty node

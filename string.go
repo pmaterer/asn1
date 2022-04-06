@@ -49,11 +49,14 @@ func makeIA5String(s string) (string, error) {
 	return s, nil
 }
 
+func isNumeric(b byte) bool {
+	return unicode.IsDigit(rune(b)) || b == ' '
+}
+
 func makeNumericString(s string) (string, error) {
-	stringBytes := []byte(s)
-	for i := 0; i < len(stringBytes); i++ {
-		if !unicode.IsDigit(rune(stringBytes[i])) || stringBytes[i] != ' ' {
-			return "", fmt.Errorf("NumericString contains invalid character: '%s'", string(stringBytes[i]))
+	for i := 0; i < len(s); i++ {
+		if !isNumeric(s[i]) {
+			return "", fmt.Errorf("NumericString contains invalid character: '%s'", string(s[i]))
 		}
 	}
 	return s, nil

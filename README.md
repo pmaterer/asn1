@@ -101,13 +101,6 @@ For each octet:
 
 Bits 7 - 1 of the first subsequent octet cannot be all zero.
 
-
-
-
-
-
-
-
 ### Universal types
 
 * `BIT STRING`: an arbitrary string of bits.
@@ -132,6 +125,12 @@ Bits 7 - 1 of the first subsequent octet cannot be all zero.
 **Implicitly** tagged types are derived from other types by changing the tag of the underlying type.
 
 **Explicitly** tagged types are derived from other types by adding an outer tag to the underlying type. Effectively a structured type consisting of one component: the underlying type.
+
+These can be translated as:
+
+`IMPLICIT`: *instead of*
+
+`EXPLICIT`: *in addition to*
 
 ****EXPLICIT** is the default.**
 
@@ -258,7 +257,7 @@ Contents octets are the concatenation of the BER encodings of the values of the 
 
 **Constructed not supported**.
 
-`T61String` is an arbitrary string of [T.61 characters](https://en.wikipedia.org/wiki/ITU_T.61). 
+`T61String` is an arbitrary string of [T.61 characters](https://en.wikipedia.org/wiki/ITU_T.61).
 
 #### `UTCTime`
 
@@ -284,8 +283,9 @@ Example:
 **May 6, 1991 4:45:40 PM PDT**
 
 Can be formatted as:
-  * `910506164540-0700`
-  * `910506234540Z`
+
+* `910506164540-0700`
+* `910506234540Z`
 
 ## References
 
